@@ -8,7 +8,7 @@ base_url = 'http://api.openweathermap.org/data/2.5/weather'
 
 cityname = "Nedlands,WA,Australia"
 
-base_url = f'https://api.weatherapi.com/v1/current.json?key=a49b400c13f6452eae5152413242808&q={cityname}&aqi=no'
+base_url = f'https://api.weatherapi.com/v1/current.json?key={api_key}&q={cityname}&aqi=yes'
 
 # Make the request
 response = requests.get(base_url)
