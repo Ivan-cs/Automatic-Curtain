@@ -17,23 +17,14 @@ source venv/bin/activate
 
 pip install requirements.txt
 
-## Run the web server
+## Run the web server (For Flask)
 
 flask run
 
 The web server should be running at http://127.0.0.1:5000
 
 
-
-# How to run pure http server
-
-Make sure you are in the correct directory ./server
-
-## Run the script
-
-python3 httpserver.py
-
-or 
+## Run the script for web server (For normal http server)
 
 python httpserver.py
 
