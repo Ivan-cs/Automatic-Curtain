@@ -2,10 +2,6 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Welcome to the home page of flask server"
-
 @app.route('/post', methods=['POST'])
 def example_post():
     data = request.json
