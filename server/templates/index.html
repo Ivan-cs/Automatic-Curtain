@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatic Curtain</title>
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <style>
+        #customRange1 {
+            width: 80%; 
+            margin: 0 auto; 
+            display: block;
+        }
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Automatic Curtain</h1>
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary active" id="autoBtn">
+                        <input type="radio" name="options" autocomplete="off" checked> Auto
+                    </label>
+                    <label class="btn btn-secondary" id="manualBtn">
+                        <input type="radio" name="options" autocomplete="off"> Manual
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Mode Controls -->
+        <div id="autoControls" class="mt-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-success btn-block" onclick="window.location.href='/control/start'">Start</button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger btn-block" onclick="window.location.href='/control/stop'">Stop</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Mode Controls (Initially Hidden) -->
+        <div id="manualControls" class="mt-5" style="display: none;">
+            <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="manualDropdown" data-toggle="collapse" data-target="#manualCollapse" aria-expanded="false" aria-controls="manualCollapse">
+                Manual Controls
+            </button>
+            <div id="manualCollapse" class="collapse" aria-labelledby="manualDropdown">
+                <div class="range-labels">
+                    <span>Left</span>
+                    <span>Right</span>
+                </div>
+                <input type="range" class="form-range" id="customRange1" min="0" max="100">
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Toggle between Auto and Manual controls
+        document.getElementById('autoBtn').addEventListener('click', function() {
+            document.getElementById('autoControls').style.display = 'block';
+            document.getElementById('manualControls').style.display = 'none';
+        });
+
+        document.getElementById('manualBtn').addEventListener('click', function() {
+            document.getElementById('autoControls').style.display = 'none';
+            document.getElementById('manualControls').style.display = 'block';
+        });
+
+        // Set the initial value of the range input to the middle
+        document.addEventListener('DOMContentLoaded', function() {
+            var rangeInput = document.getElementById('customRange1');
+            rangeInput.value = (parseInt(rangeInput.max) - parseInt(rangeInput.min)) / 2;
+        });
+    </script>
+</body>
+</html>
