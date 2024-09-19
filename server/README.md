@@ -17,7 +17,11 @@ source venv/bin/activate
 
 pip install requirements.txt
 
-## Run the web server (For Flask)
+## Run the web server (For Flask) and database
+
+flask db init
+flask db migrate
+flask db upgrade
 
 flask run
 

@@ -1,6 +1,58 @@
-from flask import Flask, request, jsonify
+import os
+
+from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/myapp.db'
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+if not os.path.exists('./database'):
+    os.makedirs('./database')
+
+print(f"Current working directory: {os.getcwd()}")
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+    
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    data = request.get_json()  # Get data sent via JSON
+    username = data.get('username')
+    email = data.get('email')
+
+    # Ensure both username and email are provided
+    if not username or not email:
+        return jsonify({"error": "Username and email are required"}), 400
+
+    # Check if user already exists
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        return jsonify({"error": "User already exists"}), 409
+
+    # Add the new user
+    new_user = User(username=username, email=email)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message": f"User {username} added successfully!"}), 201
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()  # Get all users from the database
+    db.session.remove()
+    user_list = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+
+    return jsonify(user_list), 200
 
 @app.route('/post', methods=['POST'])
 def example_post():
@@ -55,11 +107,6 @@ def error_example():
     except ZeroDivisionError as e:
         return jsonify({"error": str(e)}), 400
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-from flask import Flask, render_template, redirect, url_for
-
-app = Flask(__name__)
 
 
 @app.route('/')
@@ -73,4 +120,4 @@ def control(action):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
