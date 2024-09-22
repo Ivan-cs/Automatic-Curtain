@@ -14,23 +14,13 @@ migrate = Migrate(app, db)
 if not os.path.exists('./database'):
     os.makedirs('./database')
 
-print(f"Current working directory: {os.getcwd()}")
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f'<User {self.username}>'
-
 class UserDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Mode: manual, auto, away
     mode = db.Column(db.String(20), nullable=False, default='auto')
         
-    #curtina and light status
+    #curtain and light status
     curtain_status = db.Column(db.Boolean, nullable=True)
     light_status = db.Column(db.Boolean, nullable=True)
         
@@ -94,6 +84,7 @@ def add_user_details():
     return jsonify({"message": "User details created successfully!", "id": new_user_details.id}), 201
 
 
+# to get user details for the dashboard to update (need to implement a way for regular update from front end)
 @app.route('/userdetails/<int:user_id>', methods=['GET'])
 def get_userdetails(user_id):
     # Query the UserDetails table for the user with the given user_id
@@ -117,34 +108,143 @@ def get_userdetails(user_id):
     }
 
     return jsonify(user_details), 200
+
+# reach this endpoint for changing between modes
+@app.route('/update/mode/<string:mode>/<int:userid>' , methods = ['POST'])
+def update_mode(mode,userid):
+
+    user = UserDetails.query.filter_by(id = userid).first()
+
+    if not user:
+        return jsonify({"message":"User not found"}),404
     
+    if mode != "auto" or mode != "manual" or mode != "away":
+        return jsonify({"message":"invalid mode passed"}),404
+    
+    user.mode = mode
 
-@app.route('/add_user', methods=['POST'])
-def add_user():
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-
-    if not username or not email:
-        return jsonify({"error": "Username and email are required"}), 400
-
-    existing_user = User.query.filter_by(username=username).first()
-    if existing_user:
-        return jsonify({"error": "User already exists"}), 409
-
-    new_user = User(username=username, email=email)
-    db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": f"User {username} added successfully!"}), 201
+    return jsonify({
+        "message": "User mode updated successfully",
+        "user": {
+            "id": user.id,
+            "mode": user.mode,
+            "curtain_status": user.curtain_status,
+            "light_status": user.light_status,
+            "curtain_last_updated": user.curtain_last_updated,
+            "light_last_updated": user.light_last_updated,
+            "light_threshold": user.light_threshold,
+            "curtain_auto": user.curtain_auto,
+            "light_auto": user.light_auto
+        }
+    }), 200
+        
+#endpoint for changing device status
+@app.route('/update/device/<string:device>/<int:userid>', methos = ['POST'])
+def update_device_status(device,userid):
+    user = UserDetails.query.filter_by(id = userid).first()
 
-@app.route('/users', methods=['GET'])
-def get_users():
-    users = User.query.all()
-    db.session.remove()
-    user_list = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+    if not user:
+        return jsonify({"message":"User not found"}),404
 
-    return jsonify(user_list), 200
+    if user.mode != "manual":
+        return jsonify({"message":"Cannot change the status without being on manual"}),404
+    
+    if device != "curtain" or device != "light":
+        return jsonify({"message":"Device not found"}),404
+    
+
+    
+    # if device == "curtain" and data['curtain_status'] != user.curtain_status:
+    if device == "curtain":
+        if user.curtain_status == "on":
+
+            #TODO:reach out to esp32 here to off curtain
+            user.curtain_status = "off"
+        
+        else:
+
+            #TODO: reach out to esp32 here to on curtain
+            user.curtain_status = "on"
+        current_time = datetime.now()
+        user.curtain_last_updated = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+
+    
+    elif device == "light":
+        if user.light_status == "on":
+
+            #TODO:reach out to esp32 here to off light
+            user.light_status = "off"
+            
+                
+        else:
+
+            #TODO: reach out to esp32 here to on light
+            user.light_status = "on"
+        current_time = datetime.now()
+        user.light_last_updated = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "User device status updated successfully",
+        "user": {
+            "id": user.id,
+            "mode": user.mode,
+            "curtain_status": user.curtain_status,
+            "light_status": user.light_status,
+            "curtain_last_updated": user.curtain_last_updated,
+            "light_last_updated": user.light_last_updated,
+            "light_threshold": user.light_threshold,
+            "curtain_auto": user.curtain_auto,
+            "light_auto": user.light_auto
+        }
+    }), 200
+
+@app.route('/update/light_threshold/<int:userid>' , methods = ['POSTS'])
+def update_light_threshold(userid):
+
+    user = UserDetails.query.filter_by(id = userid).first()
+
+    if not user:
+        return jsonify({"message":"User not found"}),404
+    
+
+    if user.mode == "manual":
+        return jsonify({"message":"Cannot change light threshold during "}),404
+    
+    data = request.get.json()
+    
+
+    if data['light_threshold'] is None or data['light_threshold'] < -10 or data['light_threshold'] > 10:
+        return jsonify({"message":"Invalid light threshold value"}),404
+     
+
+    user.light_threshold = data['light_threshold']
+    db.session.commit()
+
+
+    return jsonify({
+        "message": "User light threshold value updated successfully",
+        "user": {
+            "id": user.id,
+            "mode": user.mode,
+            "curtain_status": user.curtain_status,
+            "light_status": user.light_status,
+            "curtain_last_updated": user.curtain_last_updated,
+            "light_last_updated": user.light_last_updated,
+            "light_threshold": user.light_threshold,
+            "curtain_auto": user.curtain_auto,
+            "light_auto": user.light_auto
+        }
+    }), 200
+
+
+
+    
+
 
 @app.route('/post', methods=['POST'])
 def example_post():
