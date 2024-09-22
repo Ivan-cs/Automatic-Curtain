@@ -85,7 +85,7 @@ def add_user_details():
 
 
 # to get user details for the dashboard to update (need to implement a way for regular update from front end)
-@app.route('/userdetails/<int:user_id>', methods=['GET'])
+@app.route('/dashboard/userdetails/<int:user_id>', methods=['GET'])
 def get_userdetails(user_id):
     # Query the UserDetails table for the user with the given user_id
     user = UserDetails.query.filter_by(id=user_id).first()
@@ -110,7 +110,7 @@ def get_userdetails(user_id):
     return jsonify(user_details), 200
 
 # reach this endpoint for changing between modes
-@app.route('/update/mode/<string:mode>/<int:userid>' , methods = ['POST'])
+@app.route('/dashboard/update/mode/<string:mode>/<int:userid>' , methods = ['POST'])
 def update_mode(mode,userid):
 
     user = UserDetails.query.filter_by(id = userid).first()
@@ -118,8 +118,9 @@ def update_mode(mode,userid):
     if not user:
         return jsonify({"message":"User not found"}),404
     
-    if mode != "auto" or mode != "manual" or mode != "away":
-        return jsonify({"message":"invalid mode passed"}),404
+    # if mode != "auto" or mode != "manual" or mode != "away":
+    if mode not in ["auto","manual","away"]:
+        return jsonify({"message":"invalid mode passed"}),400
     
     user.mode = mode
 
@@ -141,7 +142,7 @@ def update_mode(mode,userid):
     }), 200
         
 #endpoint for changing device status
-@app.route('/update/device/<string:device>/<int:userid>', methos = ['POST'])
+@app.route('/dashboard/update/device/<string:device>/<int:userid>', methos = ['POST'])
 def update_device_status(device,userid):
     user = UserDetails.query.filter_by(id = userid).first()
 
@@ -149,10 +150,10 @@ def update_device_status(device,userid):
         return jsonify({"message":"User not found"}),404
 
     if user.mode != "manual":
-        return jsonify({"message":"Cannot change the status without being on manual"}),404
+        return jsonify({"message":"Cannot change the status without being on manual"}),400
     
-    if device != "curtain" or device != "light":
-        return jsonify({"message":"Device not found"}),404
+    if device in ["curtain","light"]:
+        return jsonify({"message":"Device not found"}),400
     
 
     
@@ -177,8 +178,6 @@ def update_device_status(device,userid):
 
             #TODO:reach out to esp32 here to off light
             user.light_status = "off"
-            
-                
         else:
 
             #TODO: reach out to esp32 here to on light
@@ -203,7 +202,8 @@ def update_device_status(device,userid):
         }
     }), 200
 
-@app.route('/update/light_threshold/<int:userid>' , methods = ['POSTS'])
+# changing light threshold setting for auto and away mode
+@app.route('/dashboard/update/light_threshold/<int:userid>' , methods = ['POSTS'])
 def update_light_threshold(userid):
 
     user = UserDetails.query.filter_by(id = userid).first()
@@ -213,18 +213,71 @@ def update_light_threshold(userid):
     
 
     if user.mode == "manual":
-        return jsonify({"message":"Cannot change light threshold during "}),404
+        return jsonify({"message":"Cannot change light threshold during "}),400
     
     data = request.get.json()
     
 
     if data['light_threshold'] is None or data['light_threshold'] < -10 or data['light_threshold'] > 10:
-        return jsonify({"message":"Invalid light threshold value"}),404
+        return jsonify({"message":"Invalid light threshold value"}),400
      
 
     user.light_threshold = data['light_threshold']
     db.session.commit()
 
+
+    return jsonify({
+        "message": "User light threshold value updated successfully",
+        "user": {
+            "id": user.id,
+            "mode": user.mode,
+            "curtain_status": user.curtain_status,
+            "light_status": user.light_status,
+            "curtain_last_updated": user.curtain_last_updated,
+            "light_last_updated": user.light_last_updated,
+            "light_threshold": user.light_threshold,
+            "curtain_auto": user.curtain_auto,
+            "light_auto": user.light_auto
+        }
+    }), 200
+
+
+@app.route('/dashboard/update/away/<string:device>/<int:userid>')
+def update_device_auto(device,userid):
+
+    user = UserDetails.query.filter_by(id = userid).first()
+
+    if not user:
+        return jsonify({"message":"User not found"}),404
+    
+    if user.mode != "away":
+        return jsonify({"message":"Can only update these fields on away mode"}),400
+    
+    # if device != "curtain" or device != "light":
+    if device not in ["curtain","light"]:
+        return jsonify({"message":"invalid device auto control"}),400
+
+    if device == "curtain":
+        if user.curtain_auto == "off" or user.curtain_auto is None:
+            user.curtain_auto = "on"
+
+        elif user.curtain_auto == "on":
+            user.curtain_auto = "off"
+
+        #TODO:reach out to esp32 that the curtain needs to be on automatic mode
+        #If esp32 decided that there is a need to change, it will response back to here via another endpoint
+
+    elif device == "light":
+        if user.light_auto == "off" or user.light_auto is None:
+            user.light_auto = "on"
+
+        elif user.light_auto == "on":
+            user.light_auto = "off"
+
+        #TODO:reach out to esp32 that light needs to be on automatic mode
+        #If esp32 decided that there is a need to change, it will response back to here via another endpoint
+
+    db.session.commit()
 
     return jsonify({
         "message": "User light threshold value updated successfully",
