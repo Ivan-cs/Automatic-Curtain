@@ -25,8 +25,8 @@ class UserDetails(db.Model):
     light_status = db.Column(db.Boolean, nullable=True)
         
     # Timestamps for last updates
-    curtain_last_updated = db.Column(db.DateTime, nullable=False , default = "Not updated")
-    light_last_updated = db.Column(db.DateTime, nullable=False ,default = "Not updated")
+    curtain_last_updated = db.Column(db.DateTime, nullable=True)
+    light_last_updated = db.Column(db.DateTime, nullable=True)
         
     # For auto mode: light threshold
     # can change this later based on what the light sensor gives
@@ -54,24 +54,15 @@ def add_user_details():
     curtain_auto = data.get('curtain_auto')  # Nullable, can be omitted
     light_auto = data.get('light_auto')      # Nullable, can be omitted
 
-    # Handle the case where timestamps aren't provided
-    if curtain_last_updated is None:
-        curtain_last_updated = datetime.now()
-    else:
-        curtain_last_updated = datetime.strptime(curtain_last_updated, '%Y-%m-%d %H:%M:%S')
 
-    if light_last_updated is None:
-        light_last_updated = datetime.now()
-    else:
-        light_last_updated = datetime.strptime(light_last_updated, '%Y-%m-%d %H:%M:%S')
 
     # Creating a new UserDetails object
     new_user_details = UserDetails(
         mode=mode,
         curtain_status=curtain_status,      
         light_status=light_status,        
-        curtain_last_updated=curtain_last_updated,
-        light_last_updated=light_last_updated,
+        curtain_last_updated=None,
+        light_last_updated=None,
         light_threshold=light_threshold,
         curtain_auto=curtain_auto,        
         light_auto=light_auto       
@@ -142,7 +133,7 @@ def update_mode(mode,userid):
     }), 200
         
 #endpoint for changing device status
-@app.route('/dashboard/update/device/<string:device>/<int:userid>', methos = ['POST'])
+@app.route('/dashboard/update/device/<string:device>/<int:userid>', methods = ['POST'])
 def update_device_status(device,userid):
     user = UserDetails.query.filter_by(id = userid).first()
 
@@ -152,38 +143,37 @@ def update_device_status(device,userid):
     if user.mode != "manual":
         return jsonify({"message":"Cannot change the status without being on manual"}),400
     
-    if device in ["curtain","light"]:
+    if device not in ["curtain","light"]:
+
         return jsonify({"message":"Device not found"}),400
     
 
     
     # if device == "curtain" and data['curtain_status'] != user.curtain_status:
     if device == "curtain":
-        if user.curtain_status == "on":
+        if user.curtain_status:
 
             #TODO:reach out to esp32 here to off curtain
-            user.curtain_status = "off"
+            user.curtain_status = False
         
         else:
 
             #TODO: reach out to esp32 here to on curtain
-            user.curtain_status = "on"
-        current_time = datetime.now()
-        user.curtain_last_updated = current_time.strftime('%Y-%m-%d %H:%M:%S')
+            user.curtain_status = True
+        user.curtain_last_updated = datetime.now()
 
 
     
     elif device == "light":
-        if user.light_status == "on":
+        if user.light_status:
 
             #TODO:reach out to esp32 here to off light
-            user.light_status = "off"
+            user.light_status = False
         else:
 
             #TODO: reach out to esp32 here to on light
-            user.light_status = "on"
-        current_time = datetime.now()
-        user.light_last_updated = current_time.strftime('%Y-%m-%d %H:%M:%S')
+            user.light_status = True
+        user.light_last_updated = datetime.now()
 
     db.session.commit()
 
@@ -203,7 +193,7 @@ def update_device_status(device,userid):
     }), 200
 
 # changing light threshold setting for auto and away mode
-@app.route('/dashboard/update/light_threshold/<int:userid>' , methods = ['POSTS'])
+@app.route('/dashboard/update/light_threshold/<int:userid>' , methods = ['POST'])
 def update_light_threshold(userid):
 
     user = UserDetails.query.filter_by(id = userid).first()
@@ -213,9 +203,9 @@ def update_light_threshold(userid):
     
 
     if user.mode == "manual":
-        return jsonify({"message":"Cannot change light threshold during "}),400
+        return jsonify({"message":"Cannot change light threshold during manual mode"}),400
     
-    data = request.get.json()
+    data = request.get_json()
     
 
     if data['light_threshold'] is None or data['light_threshold'] < -10 or data['light_threshold'] > 10:
@@ -258,21 +248,21 @@ def update_device_auto(device,userid):
         return jsonify({"message":"invalid device auto control"}),400
 
     if device == "curtain":
-        if user.curtain_auto == "off" or user.curtain_auto is None:
-            user.curtain_auto = "on"
+        if user.curtain_auto is None:
+            user.curtain_auto = True
 
-        elif user.curtain_auto == "on":
-            user.curtain_auto = "off"
+        else:
+            user.curtain_auto = not user.curtain_auto
 
         #TODO:reach out to esp32 that the curtain needs to be on automatic mode
         #If esp32 decided that there is a need to change, it will response back to here via another endpoint
 
     elif device == "light":
-        if user.light_auto == "off" or user.light_auto is None:
-            user.light_auto = "on"
+        if user.light_auto is None:
+            user.light_auto = True
 
-        elif user.light_auto == "on":
-            user.light_auto = "off"
+        else:
+            user.light_auto = not user.light_auto
 
         #TODO:reach out to esp32 that light needs to be on automatic mode
         #If esp32 decided that there is a need to change, it will response back to here via another endpoint
