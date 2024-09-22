@@ -2,7 +2,7 @@
 
 Make sure you are in the correct directory ./server
 
-## Create a new virtual environment and activate it
+## Create a new virtual environment
 
 python3 -m venv venv
 
@@ -10,26 +10,19 @@ or
 
 python -m venv venv
 
-source venv/bin/activate
+## Activate the virtual environment created
 
+source venv/bin/activate
 
 ## Install the requirements of the project
 
-pip install requirements.txt
+pip install -r requirements.txt
 
 ## Run the web server (For Flask) and database
 
-flask db init
-flask db migrate
-flask db upgrade
+
+flask db upgrade (for applying migrations to the database schema)
 
 flask run
 
 The web server should be running at http://127.0.0.1:5000
-
-
-## Run the script for web server (For normal http server)
-
-python httpserver.py
-
-The webserver should be running at http://127.0.0.1:8000
