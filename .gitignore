@@ -66,3 +66,6 @@ Procfile
 
 # Jupyter Notebook specific
 .ipynb_checkpoints/
+
+/server/database/
+
