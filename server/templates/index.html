@@ -4,12 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automatic Curtain</title>
-    <!-- Bootstrap CSS -->
-    <link
+\    <link
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         rel="stylesheet"
     >
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #sidebar {
+            width: 250px; 
+            background-color: #f8f9fa;
+            height: 100vh;
+            padding: 20px;
+        }
+        #main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
         #customRange1 {
             width: 80%; 
             margin: 0 auto; 
@@ -21,52 +36,125 @@
             width: 80%;
             margin: 0 auto;
         }
+        .container-main {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Card grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 20px;
+        }
+
+        /* Adjust card styling */
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .card .icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* Custom coloring for room/device status */
+        .icon-lightbulb {
+            color: #ffd700;
+        }
+
+        .icon-speaker {
+            color: #888;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-5 text-center">Automatic Curtain</h1>
-        <div class="row mt-5">
-            <div class="col-md-12 text-center">
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-primary active" id="autoBtn">
-                        <input type="radio" name="options" autocomplete="off" checked> Auto
-                    </label>
-                    <label class="btn btn-secondary" id="manualBtn">
-                        <input type="radio" name="options" autocomplete="off"> Manual
-                    </label>
-                </div>
-            </div>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">
+            Smart Curtain
+          </a>
+        </div>
+      </nav>
+    <div class="container-main">
+        <div id="sidebar" class="bg-dark text-white p-3">
+            <h5>Rooms</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Living Room</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Studio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Kunyang's Room</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Lingyu's Room</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Jiaxin's Room</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Yin's Room</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Dhanush's Room</a>
+                </li>
+            </ul>
         </div>
 
-        <!-- Auto Mode Controls -->
-        <div id="autoControls" class="mt-5">
-            <div class="row">
-                <div class="col-md-6">
-                    <button class="btn btn-success btn-block" onclick="window.location.href='/control/start'">Start</button>
+        <div id="main-content">
+            <h1 class="mt-4 text-center">Automatic Curtain</h1>
+            <h2>Settings</h2>
+            <div class="card-grid">
+                <div class="card text-center">
+                    <span class="icon icon-lightbulb">💡</span>
+                    <h5 class="card-title">Automated Scheduling</h5>
                 </div>
-                <div class="col-md-6">
-                    <button class="btn btn-danger btn-block" onclick="window.location.href='/control/stop'">Stop</button>
+                <div class="card text-center">
+                    <span class="icon icon-sun">🌞</span>
+                    <h5 class="card-title">Light Sensing</h5>
                 </div>
-            </div>
-        </div>
 
-        <!-- Manual Mode Controls (Initially Hidden) -->
-        <div id="manualControls" class="mt-5" style="display: none;">
-            <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="manualDropdown" data-toggle="collapse" data-target="#manualCollapse" aria-expanded="false" aria-controls="manualCollapse">
-                Manual Controls
-            </button>
-            <div id="manualCollapse" class="collapse" aria-labelledby="manualDropdown">
-                <div class="range-labels">
-                    <span>Left</span>
-                    <span>Right</span>
+                <div class="card text-center">
+                    <span class="icon icon-temperature">🌡️</span>
+                    <h5 class="card-title">Temperature Control </h5>
                 </div>
-                <input type="range" class="form-range" id="customRange1" min="0" max="100">
+                <div class="card text-center">
+                    <span class="icon icon-weather">☁️</span>
+                    <h5 class="card-title">Weather Integration </h5>
+                </div>
+                <div class="card text-center">
+                    <span class="icon icon-manual">⚙️</span>
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <h5 class="card-title">Manual </h5>
+                            </button>
+                        </h5>
+                    <div class="collapse" id="collapseExample">
+                        <div class="card-body">
+                            <div class="range-labels">
+                                <span>Open</span>
+                                <span>Close</span>
+                            </div>
+                            <input type="range" class="form-range" id="customRange1" min="0" max="5" step="1">
+                             </div>                        
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
