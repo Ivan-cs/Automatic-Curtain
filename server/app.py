@@ -65,13 +65,30 @@ def add_room():
     return jsonify({"message": "Room created successfully!", "id": new_room.id}), 201
 
 
+@app.route('/dashboard/<int:roomid>',methods = ['GET'])
+def get_room_details(roomid):
+    room = RoomDetails.query.filter_by(id=roomid).first()
+
+    if not room:
+        return jsonify({"message": "User not found"}), 404
+    
+    return jsonify({
+        "message": "User detail for the requested room id",
+        "user": {
+            "id": room.id,
+            "mode": room.mode,
+            "curtain_status": room.curtain_status,
+            "light_status": room.light_status,
+        }
+    }),200
+    
+
 @app.route('/dashboard/update/<int:roomid>',methods = ['POST'])
 def update_room(roomid):
     room = RoomDetails.query.filter_by(id=roomid).first()
 
     if not room:
         return jsonify({"message": "User not found"}), 404
-    
 
     data = request.get_json()
 
@@ -92,14 +109,12 @@ def update_room(roomid):
             #let the esp32 know that it is now in auto mode
             #might need to change some states here
 
-
-
             room.mode == "auto"
 
             db.session.commit()
             return jsonify({
 
-                "message": "User light threshold value updated successfully",
+                "message": "Room light status updated successfully",
                 "user": {
                     "id": room.id,
                     "mode": room.mode,
@@ -113,7 +128,7 @@ def update_room(roomid):
 
         if light_status == room.light_status and curtain_status == room.curtain_status:
             return jsonify({
-                 "message": "User light threshold value updated successfully",
+                 "message": "Room curtain status updated successfully",
                 "user": {
                     "id": room.id,
                     "mode": room.mode,
@@ -127,6 +142,7 @@ def update_room(roomid):
         if light_status != room.light_status:
 
             #let esp32 know that it is entering manual mode and light needs to be changed
+            #might need to change some states
 
             if room.mode == "auto":
                 room.mode == "manual"
@@ -166,10 +182,6 @@ def update_room(roomid):
                     "light_status": room.light_status,
                 }
             }),200
-
-
-
-        
 
 @app.route('/add_user_details', methods=['POST'])
 def add_user_details():
