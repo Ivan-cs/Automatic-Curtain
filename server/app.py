@@ -126,7 +126,7 @@ def update_room(roomid):
 
     elif mode == "manual":
 
-        if light_status == room.light_status and curtain_status == room.curtain_status:
+        if light_status != room.light_status and curtain_status != room.curtain_status:
             return jsonify({
                  "message": "Nothing to be updated",
                 "room": {
@@ -135,7 +135,7 @@ def update_room(roomid):
                     "curtain_status": room.curtain_status,
                     "light_status": room.light_status,
                 }
-            }),200
+            }),400
         
          
         if light_status != room.light_status:
