@@ -70,11 +70,11 @@ def get_room_details(roomid):
     room = RoomDetails.query.filter_by(id=roomid).first()
 
     if not room:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Room not found"}), 404
     
     return jsonify({
-        "message": "User detail for the requested room id",
-        "user": {
+        "message": "Room detail for the requested room id",
+        "room": {
             "id": room.id,
             "mode": room.mode,
             "curtain_status": room.curtain_status,
@@ -88,7 +88,7 @@ def update_room(roomid):
     room = RoomDetails.query.filter_by(id=roomid).first()
 
     if not room:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Room not found"}), 404
 
     data = request.get_json()
 
@@ -96,7 +96,7 @@ def update_room(roomid):
     light_status = data['light_status']
     curtain_status = data['curtain_status']
 
-    if mode != "auto" or mode != "manual":
+    if mode not in ["auto", "manual"]:
         return jsonify({"message":"invalid mode passed"}),400
     
 
@@ -109,13 +109,13 @@ def update_room(roomid):
             #let the esp32 know that it is now in auto mode
             #might need to change some states here
 
-            room.mode == "auto"
+            room.mode = "auto"
 
             db.session.commit()
             return jsonify({
 
-                "message": "Room light status updated successfully",
-                "user": {
+                "message": "Room mode updated successfully",
+                "room": {
                     "id": room.id,
                     "mode": room.mode,
                     "curtain_status": room.curtain_status,
@@ -128,8 +128,8 @@ def update_room(roomid):
 
         if light_status == room.light_status and curtain_status == room.curtain_status:
             return jsonify({
-                 "message": "Room curtain status updated successfully",
-                "user": {
+                 "message": "Nothing to be updated",
+                "room": {
                     "id": room.id,
                     "mode": room.mode,
                     "curtain_status": room.curtain_status,
@@ -137,23 +137,21 @@ def update_room(roomid):
                 }
             }),200
         
-        
-        
+         
         if light_status != room.light_status:
 
             #let esp32 know that it is entering manual mode and light needs to be changed
             #might need to change some states
 
             if room.mode == "auto":
-                room.mode == "manual"
-            
-            room.light_status = not room.light_status
+                room.mode = "manual"
+            room.light_status = light_status
 
             db.session.commit()
 
             return jsonify({
-                "message": "User light threshold value updated successfully",
-                "user": {
+                "message": "Room light status updated successfully",
+                "room": {
                     "id": room.id,
                     "mode": room.mode,
                     "curtain_status": room.curtain_status,
@@ -167,15 +165,15 @@ def update_room(roomid):
             #let esp32 know that it is entering manual mode and curtain needs to be changed
 
             if room.mode == "auto":
-                room.mode == "manual"
-                        
-            room.curtain_status = not room.curtain_status
+                room.mode = "manual"
+                
+            room.curtain_status = curtain_status
 
             db.session.commit()
 
             return jsonify({
-                "message": "User light threshold value updated successfully",
-                "user": {
+                "message": "Room's curtain status updated successfully",
+                "room": {
                     "id": room.id,
                     "mode": room.mode,
                     "curtain_status": room.curtain_status,
