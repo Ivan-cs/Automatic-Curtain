@@ -1,54 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automatic Curtain</title>
-\    <link
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    \
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
+
         #sidebar {
-            width: 250px; 
+            width: 250px;
             background-color: #f8f9fa;
             height: 100vh;
             padding: 20px;
         }
+
         #main-content {
             flex: 1;
             padding: 20px;
             background-color: #f0f0f0;
         }
+
         #customRange1 {
-            width: 80%; 
-            margin: 0 auto; 
+            width: 80%;
+            margin: 0 auto;
             display: block;
         }
+
         .range-labels {
             display: flex;
             justify-content: space-between;
             width: 80%;
             margin: 0 auto;
         }
+
         .container-main {
             display: flex;
             height: 100vh;
         }
 
-        /* Card grid */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 20px;
         }
 
-        /* Adjust card styling */
         .card {
             border: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -63,7 +65,6 @@
             display: inline-block;
         }
 
-        /* Custom coloring for room/device status */
         .icon-lightbulb {
             color: #ffd700;
         }
@@ -73,14 +74,15 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">
-            Smart Curtain
-          </a>
+            <a class="navbar-brand" href="/">
+                Smart Curtain
+            </a>
         </div>
-      </nav>
+    </nav>
     <div class="container-main">
         <div id="sidebar" class="bg-dark text-white p-3">
             <h5>Rooms</h5>
@@ -116,27 +118,42 @@
                 <div class="card text-center">
                     <span class="icon icon-lightbulb">💡</span>
                     <h5 class="card-title">Automated Scheduling</h5>
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="automatedSwitch" checked>
+                            <label class="form-check-label" for="automatedSwitch" id="automatedLabel">On</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="card text-center">
-                    <span class="icon icon-sun">🌞</span>
-                    <h5 class="card-title">Light Sensing</h5>
-                </div>
-
                 <div class="card text-center">
                     <span class="icon icon-temperature">🌡️</span>
-                    <h5 class="card-title">Temperature Control </h5>
+                    <h5 class="card-title">Temperature Control</h5>
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="temperatureSwitch"
+                                disabled>
+                            <label class="form-check-label" for="temperatureSwitch" id="temperatureLabel">Off</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="card text-center">
                     <span class="icon icon-weather">☁️</span>
-                    <h5 class="card-title">Weather Integration </h5>
+                    <h5 class="card-title">Weather Integration</h5>
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="weatherSwitch">
+                            <label class="form-check-label" for="weatherSwitch" id="weatherLabel">Off</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="card text-center">
                     <span class="icon icon-manual">⚙️</span>
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                <h5 class="card-title">Manual </h5>
-                            </button>
-                        </h5>
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <h5 class="card-title">Manual Control</h5>
+                        </button>
+                    </h5>
                     <div class="collapse" id="collapseExample">
                         <div class="card-body">
                             <div class="range-labels">
@@ -144,9 +161,25 @@
                                 <span>Close</span>
                             </div>
                             <input type="range" class="form-range" id="customRange1" min="0" max="5" step="1">
-                             </div>                        
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="manualControlModal" tabindex="-1" aria-labelledby="manualControlModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manualControlModalLabel">Warning</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Using manual control will disable automated scheduling. Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmManualControl">Proceed</button>
                 </div>
             </div>
         </div>
@@ -157,24 +190,110 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <script>
-        // Toggle between Auto and Manual controls
-        document.getElementById('autoBtn').addEventListener('click', function() {
-            document.getElementById('autoControls').style.display = 'block';
-            document.getElementById('manualControls').style.display = 'none';
-        });
-
-        document.getElementById('manualBtn').addEventListener('click', function() {
-            document.getElementById('autoControls').style.display = 'none';
-            document.getElementById('manualControls').style.display = 'block';
-        });
-
-        // Set the initial value of the range input to the middle
+        function setupToggle(switchId, labelId) {
+            const switchElement = document.getElementById(switchId);
+            const switchLabel = document.getElementById(labelId);
+    
+            // Set the initial label state based on the switch state
+            switchLabel.textContent = switchElement.checked ? 'On' : 'Off';
+    
+            //  event listener to update label when switch is toggled
+            switchElement.addEventListener('change', function() {
+                switchLabel.textContent = this.checked ? 'On' : 'Off';
+    
+                const mode = switchElement.checked ? 'auto' : 'manual';
+                fetch(`/dashboard/update/mode/${mode}/1`, {  // Assuming user ID is 1, change as needed
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Mode updated:', data.message);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    
         document.addEventListener('DOMContentLoaded', function() {
-            var rangeInput = document.getElementById('customRange1');
-            rangeInput.value = (parseInt(rangeInput.max) - parseInt(rangeInput.min)) / 2;
+            // Initialize switches
+            setupToggle('automatedSwitch', 'automatedLabel');
+            setupToggle('temperatureSwitch', 'temperatureLabel');
+            setupToggle('weatherSwitch', 'weatherLabel');
+    
+            //  elements for manual control and modal
+            const manualControl = document.getElementById('customRange1');
+            const automatedSwitch = document.getElementById('automatedSwitch');
+            const manualControlModal = new bootstrap.Modal(document.getElementById('manualControlModal'));
+    
+            //  manual control interaction if in automated mode
+            manualControl.addEventListener('mousedown', function(event) {
+                if (automatedSwitch.checked) {
+                    event.preventDefault(); 
+                    manualControlModal.show(); 
+                }
+            });
+    
+            document.getElementById('confirmManualControl').addEventListener('click', function() {
+                // Switch to manual mode (disable automation)
+                automatedSwitch.checked = false;
+                document.getElementById('automatedLabel').textContent = 'Off';
+    
+                // Send API call to switch to manual mode
+                fetch(`/dashboard/update/mode/manual/1`, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Mode switched to manual:', data.message);
+                })
+                .catch((error) => {
+                    console.error('Error switching mode:', error);
+                });
+    
+                manualControlModal.hide(); 
+            });
+    
+            // Handle curtain control (manual mode only)
+            manualControl.addEventListener('change', function() {
+                if (!automatedSwitch.checked) {
+                    fetch(`/dashboard/update/device/curtain/1`, {  
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Curtain status updated:', data.message);
+                    })
+                    .catch((error) => {
+                        console.error('Error updating curtain:', error);
+                    });
+                }
+            });
+    
+            document.getElementById('manualControlModal').addEventListener('hidden.bs.modal', function() {
+                manualControl.value = manualControl.defaultValue; 
+            });
+    
+            document.querySelector('#manualControlModal .btn-secondary').addEventListener('click', function() {
+                manualControlModal.hide();
+            });
+    
+            document.querySelector('#manualControlModal .btn-close').addEventListener('click', function() {
+                manualControlModal.hide(); 
+            });
         });
     </script>
+    
 </body>
+
 </html>
