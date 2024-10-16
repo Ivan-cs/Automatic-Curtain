@@ -105,6 +105,21 @@ def update_room(roomid):
 
     elif mode == "manual":
 
+        if light_status is room.light_status and curtain_status is room.curtain_status:
+            room.mode = "manual"
+
+            db.session.commit()
+
+            return jsonify({
+                "message": "Mode updated successfully",
+                "room":{
+                    "id": room.id,
+                    "mode": room.mode,
+                    "curtain_status": room.curtain_status,
+                    "light_status": room.light_status,
+                }
+            }) 
+
         if light_status != room.light_status and curtain_status != room.curtain_status:
             return jsonify({
                  "message": "Nothing to be updated",

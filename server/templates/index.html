@@ -300,7 +300,7 @@
     // Function to fetch room details from /dashboard/{room_id}
     function fetchRoomDetails(roomId) {
       console.log(roomId);
-      fetch(`/dashboard/${roomId}`)
+      fetch(`/dashboard/1`)
         .then((response) => response.json())
         .then((resp) => {
           if (resp.ok) {
@@ -332,7 +332,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
       // Initialize switches and fetch initial room data
-      fetch("/room/${room_id}")
+      fetch("/dashboard/1")
         .then((response) => response.json())
         .then((data) => {
           // Update the switches and labels based on the data fetched
@@ -380,7 +380,7 @@
           document.getElementById("automatedLabel").textContent = "Off";
 
           // Update the mode to manual
-          fetch("/room/${room_id}", {
+          fetch("/dashboard/${room_id}", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mode: "manual" }),
@@ -397,7 +397,7 @@
       // Handle curtain control
       manualControl.addEventListener("change", function () {
         if (!automatedSwitch.checked) {
-          fetch("/room/${room_id}", {
+          fetch("/dashboard/1", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ curtain_status: manualControl.value > 2 }),
