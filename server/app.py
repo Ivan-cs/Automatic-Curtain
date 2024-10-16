@@ -184,7 +184,7 @@ def update_room(roomid):
                     "light_status": room.light_status,
                 }
             }),200
-
+        
 @app.route('/add_user_details', methods=['POST'])
 def add_user_details():
     data = request.get_json()  # Get JSON data from request
