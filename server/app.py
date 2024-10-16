@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/myapp.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-IP = "localhost"
+IP = "http://192.168.53.225"
 
 if not os.path.exists('./database'):
     os.makedirs('./database')
@@ -22,7 +22,18 @@ class RoomDetails(db.Model):
     mode = db.Column(db.String(20), nullable=False, default='auto')
     curtain_status = db.Column(db.Boolean, nullable=True)
     light_status = db.Column(db.Boolean, nullable=True)
-    
+
+
+# class LogChange(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)  # changeid as primary key
+#     roomid = db.Column(db.Integer, db.ForeignKey('roomdetails.id'), nullable=False)  # ForeignKey to RoomDetails
+#     device = db.Column(db.String(50), nullable=False)  # Device name (e.g., 'curtain' or 'light')
+#     state = db.Column(db.String(20), nullable=False)  # The state of the device (e.g., 'on', 'off')
+#     current_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
+
+#     # Relationship with RoomDetails
+#     room = db.relationship('RoomDetails', backref=db.backref('log_changes', lazy=True))
+
 
 @app.route('/add_room',methods = ['POST'])
 def add_room():
