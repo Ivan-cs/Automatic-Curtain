@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import requests
 
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_migrate import Migrate
@@ -10,6 +11,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/myapp.db'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+IP = "localhost"
 
 if not os.path.exists('./database'):
     os.makedirs('./database')
@@ -88,6 +91,14 @@ def update_room(roomid):
             #let the esp32 know that it is now in auto mode
             #might need to change some states here
 
+
+            response = requests.get(f'{IP}/manual/off')
+
+            if response.status_code == 500:
+                return jsonify({
+                    "message":"Mode change failed"
+                }),500
+
             room.mode = "auto"
 
             db.session.commit()
@@ -137,8 +148,30 @@ def update_room(roomid):
             #let esp32 know that it is entering manual mode and light needs to be changed
             #might need to change some states
 
+            response = requests.get(f"{IP}/manual/on")
+
+            if response.status_code == 500:
+                return jsonify({
+                    "message":"cannot turn to manual mode"
+                }),500
+            
+
+            if light_status:
+                change = "on"
+            else:
+                change = "off"
+            
+            response = requests.get(f"{IP}/light/{change}", timeout=5)
+
+
+            if response.status_code == 500:
+                return jsonify({
+                    "message": "Cannot modify the light status on hardware"
+                }),500
+
             if room.mode == "auto":
                 room.mode = "manual"
+
             room.light_status = light_status
 
             db.session.commit()
@@ -157,6 +190,28 @@ def update_room(roomid):
         if curtain_status != room.curtain_status:
 
             #let esp32 know that it is entering manual mode and curtain needs to be changed
+
+            response = requests.get(f"{IP}/manual/on")
+
+            if response.status_code == 500:
+                return jsonify({
+                    "message":"cannot turn to manual mode"
+                }),500
+            
+
+            if curtain_status:
+                change = "open"
+            else:
+                change = "close"
+
+            response = requests.get(f"{IP}/curtain/{change}",timeout = 30)
+
+            if response.status_code == 500:
+                return jsonify({
+                    "message": "Cannot modify the curtain on hardware"
+                }),500
+
+
 
             if room.mode == "auto":
                 room.mode = "manual"
