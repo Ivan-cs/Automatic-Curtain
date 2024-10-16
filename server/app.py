@@ -96,6 +96,10 @@ def update_room(roomid):
     light_status = data['light_status']
     curtain_status = data['curtain_status']
 
+    print(mode,light_status,curtain_status)
+    print(data, 123)
+    print(room.__dict__)
+
     if mode not in ["auto", "manual"]:
         return jsonify({"message":"invalid mode passed"}),400
     
@@ -180,7 +184,7 @@ def update_room(roomid):
                     "light_status": room.light_status,
                 }
             }),200
-
+        
 @app.route('/add_user_details', methods=['POST'])
 def add_user_details():
     data = request.get_json()  # Get JSON data from request

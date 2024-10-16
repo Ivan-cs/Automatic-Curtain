@@ -1,180 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatic Curtain</title>
-\    <link
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        #sidebar {
-            width: 250px; 
-            background-color: #f8f9fa;
-            height: 100vh;
-            padding: 20px;
-        }
-        #main-content {
-            flex: 1;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        #customRange1 {
-            width: 80%; 
-            margin: 0 auto; 
-            display: block;
-        }
-        .range-labels {
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-            margin: 0 auto;
-        }
-        .container-main {
-            display: flex;
-            height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automatic Curtain</title>
+  \
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        /* Card grid */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            grid-gap: 20px;
-        }
+    #sidebar {
+      width: 250px;
+      background-color: #f8f9fa;
+      height: 100vh;
+      padding: 20px;
+    }
 
-        /* Adjust card styling */
-        .card {
-            border: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            padding: 15px;
-            background-color: #fff;
-        }
+    #main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
 
-        .card .icon {
-            font-size: 24px;
-            margin-bottom: 10px;
-            display: inline-block;
-        }
+    #customRange1 {
+      width: 80%;
+      margin: 0 auto;
+      display: block;
+    }
 
-        /* Custom coloring for room/device status */
-        .icon-lightbulb {
-            color: #ffd700;
-        }
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      margin: 0 auto;
+    }
 
-        .icon-speaker {
-            color: #888;
-        }
-    </style>
+    .container-main {
+      display: flex;
+      height: 100vh;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-gap: 20px;
+    }
+
+    .card {
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      padding: 15px;
+      background-color: #fff;
+    }
+
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 150px;
+      /* Adjust this width as needed */
+    }
+
+    .switch-container label {
+      margin: 0;
+      /* Remove extra margin from labels */
+    }
+
+    .card .icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    .icon-lightbulb {
+      color: #ffd700;
+    }
+
+    .icon-speaker {
+      color: #888;
+    }
+  </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">
-            Smart Curtain
-          </a>
-        </div>
-      </nav>
-    <div class="container-main">
-        <div id="sidebar" class="bg-dark text-white p-3">
-            <h5>Rooms</h5>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Living Room</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Studio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Kunyang's Room</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Lingyu's Room</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Jiaxin's Room</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Yin's Room</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Dhanush's Room</a>
-                </li>
-            </ul>
-        </div>
-
-        <div id="main-content">
-            <h1 class="mt-4 text-center">Automatic Curtain</h1>
-            <h2>Settings</h2>
-            <div class="card-grid">
-                <div class="card text-center">
-                    <span class="icon icon-lightbulb">💡</span>
-                    <h5 class="card-title">Automated Scheduling</h5>
-                </div>
-                <div class="card text-center">
-                    <span class="icon icon-sun">🌞</span>
-                    <h5 class="card-title">Light Sensing</h5>
-                </div>
-
-                <div class="card text-center">
-                    <span class="icon icon-temperature">🌡️</span>
-                    <h5 class="card-title">Temperature Control </h5>
-                </div>
-                <div class="card text-center">
-                    <span class="icon icon-weather">☁️</span>
-                    <h5 class="card-title">Weather Integration </h5>
-                </div>
-                <div class="card text-center">
-                    <span class="icon icon-manual">⚙️</span>
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                <h5 class="card-title">Manual </h5>
-                            </button>
-                        </h5>
-                    <div class="collapse" id="collapseExample">
-                        <div class="card-body">
-                            <div class="range-labels">
-                                <span>Open</span>
-                                <span>Close</span>
-                            </div>
-                            <input type="range" class="form-range" id="customRange1" min="0" max="5" step="1">
-                             </div>                        
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"> Smart Curtain </a>
+    </div>
+  </nav>
+  <div class="container-main">
+    <div id="sidebar" class="bg-dark text-white p-3">
+      <h5>Rooms</h5>
+      <ul id="roomList" class="nav flex-column"></ul>
+      <button id="addRoomBtn" class="btn btn-success btn-block" onclick="addRoom()">
+        + Add Room
+      </button>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div id="main-content">
+      <h1 class="mt-4 text-center">Automatic Curtain</h1>
+      <h2>Settings</h2>
+      <div class="card-grid">
+        <div class="card text-center">
+          <span class="icon icon-lightbulb">💡</span>
+          <h5 class="card-title">Automated Scheduling</h5>
+          <div class="d-flex flex-column align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="automatedSwitch" checked />
+              <label class="form-check-label" for="automatedSwitch" id="automatedLabel">On</label>
+            </div>
+          </div>
+        </div>
+        <div class="card text-center">
+          <span class="icon icon-temperature">🌡️</span>
+          <h5 class="card-title">Temperature Control</h5>
+          <div class="d-flex flex-column align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="temperatureSwitch" disabled />
+              <label class="form-check-label" for="temperatureSwitch" id="temperatureLabel">Off</label>
+            </div>
+          </div>
+        </div>
+        <div class="card text-center">
+          <span class="icon icon-weather">☁️</span>
+          <h5 class="card-title">Weather Integration</h5>
+          <div class="d-flex flex-column align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="weatherSwitch" />
+              <label class="form-check-label" for="weatherSwitch" id="weatherLabel">Off</label>
+            </div>
+          </div>
+        </div>
+        <div class="card text-center">
+          <span class="icon icon-manual">⚙️</span>
+          <h5 class="mb-0">
+            <h5 class="card-title">Manual Control</h5>
+            <div class="d-flex flex-column align-items-center">
+              <div class="switch-container">
 
-    <script>
-        // Toggle between Auto and Manual controls
-        document.getElementById('autoBtn').addEventListener('click', function() {
-            document.getElementById('autoControls').style.display = 'block';
-            document.getElementById('manualControls').style.display = 'none';
+                <div class="form-check form-switch">
+                  <label for="curtainSwitch">Curtain</label>
+                  <input class="form-check-input" type="checkbox" role="switch" id="curtainSwitch" />
+                  <label class="form-check-label" id="curtainSwitchLabel">Off</label>
+                </div>
+              </div>
+              <div class="switch-container">
+
+                <div class="form-check form-switch">
+                  <label for="lightSwitch">Light</label>
+                  <input class="form-check-input" type="checkbox" role="switch" id="lightSwitch" />
+                  <label class="form-check-label" id="lightSwitchLabel">Off</label>
+                </div>
+              </div>
+            </div>
+        </div>
+        </h5>
+        <div class="collapse" id="collapseExample">
+          <div class="card-body">
+            <div class="range-labels">
+              <span>Open</span>
+              <span>Close</span>
+            </div>
+            <input type="range" class="form-range" id="customRange1" min="0" max="5" step="1" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="modal fade" id="manualControlModal" tabindex="-1" aria-labelledby="manualControlModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="manualControlModalLabel">Warning</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Using manual control will disable automated scheduling. Are you sure
+          you want to proceed?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" id="confirmManualControl">
+            Proceed
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    let room_id = 0;
+
+    function setupToggle(switchId, labelId) {
+      const switchElement = document.getElementById(switchId);
+      const switchLabel = document.getElementById(labelId);
+
+      // Set the initial label state based on the switch state
+      switchLabel.textContent = switchElement.checked ? "On" : "Off";
+
+      // Event listener to update label and room state when switch is toggled
+      switchElement.addEventListener("change", function () {
+        // Update the label based on the switch state
+        switchLabel.textContent = this.checked ? "On" : "Off";
+
+        // Get the updated values for all switches (mode, curtain, and light)
+        const mode = document.getElementById("automatedSwitch").checked ? "auto" : "manual";
+        const curtainStatus = Boolean(document.getElementById("curtainSwitch").checked);
+        const lightStatus = Boolean(document.getElementById("lightSwitch").checked);
+        updateRoomDetails( mode, curtainStatus, lightStatus);
+      });
+    }
+    function updateRoomDetails( mode, curtainStatus, lightStatus) {
+      console.log(room_id)
+      // Ensure curtainStatus and lightStatus are boolean (they should be from the switch checked property)
+      const payload = {
+        mode: mode,                   // Room mode: auto/manual
+        curtain_status: Boolean(curtainStatus), // Curtain status: true/false
+        light_status: Boolean(lightStatus)      // Light status: true/false
+      };
+
+      // Send a POST request to update the room details
+      fetch(`/dashboard/update/${room_id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload) // Send the room details as JSON payload
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (response.ok) {
+            console.log("Room updated:", data.message);
+          } else {
+            console.error("Error:", data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating room:", error);
+        });
+    }
+
+
+    function addRoom() {
+      const payload = {
+        mode: "auto",
+        light_status: false,
+        curtain_status: false,
+      };
+
+      fetch("/add_room", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.id) {
+            room_id = data.id;
+            addRoomToList(data.id);
+          }
+          console.log("Room created:", data.message);
+          console.log("Room ID:", room_id);
+        })
+        .catch((error) => console.error("Error creating room:", error));
+    }
+
+    // Function to add room to the list in the sidebar
+    function addRoomToList(roomId) {
+      const roomList = document.getElementById("roomList");
+      const roomItem = document.createElement("li");
+      roomItem.className = "nav-item";
+      roomItem.innerHTML = `<a class="nav-link text-white" href="#" onclick="selectRoom(${roomId})">Room ${roomId}</a>`;
+      roomList.appendChild(roomItem);
+    }
+
+    // Function to select a room and display settings
+    function selectRoom(roomId) {
+      document.getElementById("roomSettings").classList.remove("d-none");
+      // Additional logic can be added to fetch room settings and update the UI
+      console.log(`Selected Room ${roomId}`);
+    }
+
+
+    // Function to fetch room details from /dashboard/{room_id}
+    function fetchRoomDetails(roomId) {
+      console.log(roomId);
+      fetch(`/dashboard/${roomId}`)
+        .then((response) => response.json())
+        .then((resp) => {
+          if (resp.ok) {
+            // Update the switches and labels based on the room data
+            document.getElementById("automatedSwitch").checked = (data.room.mode === "auto");
+            document.getElementById("automatedLabel").textContent = (data.room.mode === "auto") ? "On" : "Off";
+
+            document.getElementById("curtainSwitch").checked = Boolean(data.room.curtain_status);
+            document.getElementById("curtainSwitchLabel").textContent = data.room.curtain_status ? "On" : "Off";
+
+            document.getElementById("lightSwitch").checked = Boolean(data.room.light_status);
+            document.getElementById("lightSwitchLabel").textContent = data.room.light_status ? "On" : "Off";
+          } else {
+            // Handle error if room is not found
+            console.log("Error fetching room details:", resp.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching room details:", error);
+        });
+    }
+
+    // Call this function when the page loads to fetch room details
+    document.addEventListener("DOMContentLoaded", function () {
+      const roomId = room_id;  // Assuming room ID is 1, adjust as needed
+      fetchRoomDetails(roomId);  // Fetch and update the room details on page load
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Initialize switches and fetch initial room data
+      fetch("/room/${room_id}")
+        .then((response) => response.json())
+        .then((data) => {
+          // Update the switches and labels based on the data fetched
+          document.getElementById("automatedSwitch").checked =
+            data.mode === "auto";
+          document.getElementById("automatedLabel").textContent =
+            data.mode === "auto" ? "On" : "Off";
+          document.getElementById("curtainSwitch").checked =
+            data.curtain_status;
+          document.getElementById("curtainSwitchLabel").textContent =
+            data.curtain_status ? "On" : "Off";
+          document.getElementById("lightSwitch").checked = data.light_status;
+          document.getElementById("lightSwitchLabel").textContent =
+            data.light_status ? "On" : "Off";
+        })
+        .catch((error) =>
+          console.error("Error fetching room details:", error)
+        );
+
+      // Setup the automated switch to toggle between auto and manual mode
+      setupToggle("automatedSwitch", "automatedLabel");
+      setupToggle("weatherSwitch", "weatherLabel");
+      setupToggle("temperatureSwitch", "temperatureLabel");
+      setupToggle("curtainSwitch", "curtainSwitchLabel");
+      setupToggle("lightSwitch", "lightSwitchLabel");
+
+      // Manual control
+      const manualControl = document.getElementById("customRange1");
+      const automatedSwitch = document.getElementById("automatedSwitch");
+      const manualControlModal = new bootstrap.Modal(
+        document.getElementById("manualControlModal")
+      );
+
+      manualControl.addEventListener("mousedown", function (event) {
+        if (automatedSwitch.checked) {
+          event.preventDefault();
+          manualControlModal.show();
+        }
+      });
+
+      document
+        .getElementById("confirmManualControl")
+        .addEventListener("click", function () {
+          automatedSwitch.checked = false;
+          document.getElementById("automatedLabel").textContent = "Off";
+
+          // Update the mode to manual
+          fetch("/room/${room_id}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mode: "manual" }),
+          })
+            .then((response) => response.json())
+            .then((data) =>
+              console.log("Mode switched to manual:", data.message)
+            )
+            .catch((error) => console.error("Error switching mode:", error));
+
+          manualControlModal.hide();
         });
 
-        document.getElementById('manualBtn').addEventListener('click', function() {
-            document.getElementById('autoControls').style.display = 'none';
-            document.getElementById('manualControls').style.display = 'block';
+      // Handle curtain control
+      manualControl.addEventListener("change", function () {
+        if (!automatedSwitch.checked) {
+          fetch("/room/${room_id}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ curtain_status: manualControl.value > 2 }),
+          })
+            .then((response) => response.json())
+            .then((data) =>
+              console.log("Curtain status updated:", data.message)
+            )
+            .catch((error) =>
+              console.error("Error updating curtain:", error)
+            );
+        }
+      });
+
+      document
+        .getElementById("manualControlModal")
+        .addEventListener("hidden.bs.modal", function () {
+          manualControl.value = manualControl.defaultValue; // Reset range on cancel
         });
 
-        // Set the initial value of the range input to the middle
-        document.addEventListener('DOMContentLoaded', function() {
-            var rangeInput = document.getElementById('customRange1');
-            rangeInput.value = (parseInt(rangeInput.max) - parseInt(rangeInput.min)) / 2;
+      document
+        .querySelector("#manualControlModal .btn-secondary")
+        .addEventListener("click", function () {
+          manualControlModal.hide();
         });
-    </script>
+
+      document
+        .querySelector("#manualControlModal .btn-close")
+        .addEventListener("click", function () {
+          manualControlModal.hide();
+        });
+    });
+  </script>
 </body>
+
 </html>
