@@ -1,15 +1,12 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SparkFun_VEML6030_Ambient_Light_Sensor.h>  // include sensor lib
-#include <ArduinoJson.h>
-#include <WebServer.h>
 #include <ESPAsyncWebServer.h>
 #include <WiFi.h>
  
 
-const char* ssid = "Sheryl's iPhone";
-const char* password = "123345s22";
-// WebServer server(80);
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
 AsyncWebServer server(80);
  
 int DIR1 = 15;

@@ -183,8 +183,6 @@ def update_room(roomid):
 
         if curtain_status != room.curtain_status:
 
-            #let esp32 know that it is entering manual mode and curtain needs to be changed
-
             response = requests.get(f"{IP}/manual/on")
 
             if response.status_code == 500:
