@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 import requests
 
-from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask import Flask, jsonify, redirect, render_template, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
@@ -149,7 +149,6 @@ def update_room(roomid):
                     "message":"cannot turn to manual mode"
                 }),500
             
-
             if light_status:
                 change = "on"
             else:
@@ -179,7 +178,6 @@ def update_room(roomid):
                     "light_status": room.light_status,
                 }
             }),200
-        
 
         if curtain_status != room.curtain_status:
 
@@ -223,7 +221,6 @@ def update_room(roomid):
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
